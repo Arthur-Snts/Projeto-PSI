@@ -28,7 +28,7 @@ html, body {
 }
 
 .conteudo {
-    height: 60%; 
+    flex-grow: 0.8; 
     display: flex;
     justify-content: center; 
     align-items: center; 
@@ -73,4 +73,31 @@ input:focus {
 
 a{
    text-decoration: none;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    height: 90;
+    align-items: center;
+    flex-grow: 0.3;
+}
+
+.nav {
+    flex-grow: 0.2;
+    display: flex;
+    justify-content: center; 
+    background-color: #4587df; 
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    background-color: #0056b3;
+    padding: 10px;
+    border-radius: 30px;
+}
+nav a:hover{
+    background-color: aqua;
+    color: black;
 }

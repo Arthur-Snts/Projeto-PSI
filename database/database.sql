@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS tb_usuarios (
     usu_id INT(11) AUTO_INCREMENT PRIMARY KEY NOT NULL,
     usu_nome VARCHAR(200) NOT NULL,
     usu_email VARCHAR(200) NOT NULL,
-    usu_senha VARCHAR(50) NOT NULL
+    usu_senha VARCHAR(200) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS tb_contatos (

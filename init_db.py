@@ -7,14 +7,6 @@ db_config = {
     'host': 'localhost',
     'port': 3306,
 }
-try:
-    # Tentando estabelecer uma conexão
-    conn = mysql.connector.connect(**db_config)
-    cursor = conn.cursor()
-except mysql.connector.Error as erro:
-    print(f"Erro ao conectar ou criar banco de dados: {erro}")
-finally:
-    conn.close()
 
 
 # Abre conexão
@@ -38,4 +30,3 @@ for statement in sql_script.split(';'):
 # Encerra operações
 conn.commit()
 cursor.close()
-conn.close()
