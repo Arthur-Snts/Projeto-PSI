@@ -1,18 +1,16 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    Minhas Conversas
+    Correios
 {% endblock %}
 
 {% block conteudo %}
-<ul>
-    Listar Conversas, ainda nn sei como
-</ul>
 
 
 
-<form action="{{url_for('contatos')}}" method="POST">
-    <h2>Adicionar Conversa</h2>
+
+<form action="{{url_for('correios')}}" method="POST">
+    <h2>Mandar Email</h2>
 
     <label for="add_nome_livro">Contato:</label>
     <select name="contato" id="">
@@ -20,8 +18,14 @@
             <option value="{{contato['con_email']}}">{{contato['con_nome']}}</option>
         {% endfor %}
     </select>
+    <select name="assunto" id="">
+        {% for livro in livros %}
+            <option value="{{livro['liv_titulo']}}">{{livro['liv_titulo']}}</option>
+        {% endfor %}
+    </select>
     <label for="">Mensagem:</label>
     <input type="text" placeholder="Insira a mensagem" name = "conteudo">
-    <input type="submit" value="adicionar">
+    <input type="password" placeholder="Insira sua senha" name = "senha">
+    <input type="submit" value="Enviar">
 </form>
 {% endblock %}

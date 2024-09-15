@@ -3,7 +3,9 @@ from flask import Flask, render_template, url_for, redirect, request
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from models import User
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from smtplib import SMTP, SMTP_SSL
+from ssl import create_default_context
+from email.message import EmailMessage
 
 
 login_manager = LoginManager()
@@ -109,19 +111,36 @@ def remove_contato(id):
 
 
 
-@app.route("/conversas", methods = ["POST", "GET"])
+@app.route("/correios", methods = ["POST", "GET"])
 @login_required
-def conversas():
+def correios():
     if request.method == "POST":
-        contato = request.form["contato"]
-        id_contato = User.select_data_contato_email(contato)['id']
-        id = current_user.id
-        conteudo = request.form["conteudo"]
-        User.insert_data_conversa(id_contato,id,conteudo)
+        #contato = request.form["contato"]
+        #conteudo = request.form["conteudo"]
+        #assunto = request.form['assunto']
+        #email = current_user.email
+        #senha = request.form["senha"]
+
+        #msg = EmailMessage()
+        #msg.set_content(conteudo)
+        #msg['Subject'] = assunto
+        #msg['From'] = f"Python SMTP <{email}>"
+        #msg['To'] = contato
+
+    
+        #server = SMTP_SSL('smtp.gmail.com', 465, context=create_default_context())
+
+        #server.login(email, senha)
+        #server.send_message(msg=msg)
+        #server.quit()
+        pass
+
+
     id = current_user.id
     contatos = User.select_data_contatos(id)
+    livros = User.select_data_livros(id)
 
-    return render_template("conversas.html", contatos = contatos)
+    return render_template("correios.html", contatos = contatos, livros = livros)
 
 
 

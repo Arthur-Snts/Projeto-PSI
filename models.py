@@ -67,7 +67,7 @@ class User(UserMixin):
         conexao = obter_conexao()
         cursor = conexao.cursor(dictionary=True)
         SELECT = 'SELECT * FROM tb_usuarios WHERE usu_email=%s'
-        cursor.execute(SELECT, (email,))
+        cursor.execute(SELECT, (id,))
         dados = cursor.fetchone()
         if dados:
             user = User(dados['usu_nome'], dados['usu_email'], dados['usu_senha'])
@@ -286,15 +286,3 @@ class User(UserMixin):
         cursor.close()
         conexao.close()
 
-    # INSERIR CONVERSA
-    @classmethod
-    def insert_data_conversa(cls, id_contato, id, conteudo):
-        conexao = obter_conexao()
-    
-        cursor = conexao.cursor()
-        INSERT = 'INSERT INTO tb_mensagens (msg_usuario_from, msg_usuario_to, msg_texto) VALUES (%s, %s, %s)'
-        cursor.execute(INSERT, (id, id_contato, conteudo))
-        conexao.commit()
-
-        cursor.close()
-        conexao.close()
