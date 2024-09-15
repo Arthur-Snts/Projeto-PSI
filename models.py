@@ -29,11 +29,11 @@ class User(UserMixin):
 
 # SELECIONAR USER   
     @classmethod
-    def select_data_user(cls, id):
+    def select_data_user(cls, email):
         conexao = obter_conexao()
         cursor = conexao.cursor(dictionary=True)
-        SELECT = 'SELECT * FROM tb_usuarios WHERE usu_id=%s'
-        cursor.execute(SELECT, (id,))
+        SELECT = 'SELECT * FROM tb_usuarios WHERE usu_email=%s'
+        cursor.execute(SELECT, (email,))
         dados = cursor.fetchone()
         if dados:
             user = User(dados['nome'], dados['email'], dados['senha'])
@@ -43,6 +43,7 @@ class User(UserMixin):
             conexao.close()
 
             return user
+        return None
 
 # SELECIONAR LIVRO  
     @classmethod
@@ -60,15 +61,16 @@ class User(UserMixin):
             conexao.close()
 
             return user
+        return None
 
 # ATUALIZAR SENHA (n faz sentido att e-mail)  
     @classmethod
-    def update_data_user(cls,id, senha):
+    def update_data_user(cls,email, senha):
         conexao = obter_conexao()
         try:
             cursor = conexao.cursor(dictionary=True)
-            UPDATE = 'UPDATE tb_usuarios SET usu_senha=%s WHERE usu_id=%s'
-            cursor.execute(UPDATE, (senha,id,))
+            UPDATE = 'UPDATE tb_usuarios SET usu_senha=%s WHERE usu_email=%s'
+            cursor.execute(UPDATE, (senha, email,))
 
             conexao.commit()
         except sql.connector.Error as e:
@@ -97,12 +99,12 @@ class User(UserMixin):
 
 # DELETAR USUÁRIO   
     @classmethod
-    def delete_data_user(cls, id):
+    def delete_data_user(cls, email):
         conexao = obter_conexao()
         try:
             cursor = conexao.cursor()
-            DELETE = 'DELETE FROM tb_usuarios WHERE id=%s'
-            cursor.execute(DELETE, (id,))
+            DELETE = 'DELETE FROM tb_usuarios WHERE usu_email=%s'
+            cursor.execute(DELETE, (email,))
             conexao.commit()
 
         except sql.connector.Error as e:
