@@ -5,5 +5,23 @@
 {% endblock %}
 
 {% block conteudo %}
-    <h1>Olá</h1>
+<ul>
+    Listar Conversas, ainda nn sei como
+</ul>
+
+
+
+<form action="{{url_for('contatos')}}" method="POST">
+    <h2>Adicionar Conversa</h2>
+
+    <label for="add_nome_livro">Contato:</label>
+    <select name="contato" id="">
+        {% for contato in contatos %}
+            <option value="{{contato['con_email']}}">{{contato['con_nome']}}</option>
+        {% endfor %}
+    </select>
+    <label for="">Mensagem:</label>
+    <input type="text" placeholder="Insira a mensagem" name = "conteudo">
+    <input type="submit" value="adicionar">
+</form>
 {% endblock %}

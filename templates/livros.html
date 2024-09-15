@@ -7,29 +7,25 @@
 {% block conteudo %}
     <ul>
         {%for livro in livros%}
-        <li>
+        <li class="livros">
             <p>Nome: {{livro['liv_titulo']}} |  Gênero: {{livro['liv_genero']}}</p>
+            <form action="{{url_for('remove_livro', id=livro['liv_id'])}}" method="POST" class="delete">
+                <input type="submit" value="deletar">
+            </form>
         </li>
         {%endfor%}
     </ul>
 
-    <form action="{{url_for('livros')}}" method="POST">
-        <h2>Deletar livro</h2>
-
-        <label for="del_nome_livro">Título do livro:</label>
-        <input type="text" name="del_nome_livro" id="del_nome_livro" placeholder="Título do livro" required>
-
-        <input type="submit" value="deletar">
-    </form>
+    
 
     <form action="{{url_for('livros')}}" method="POST">
         <h2>Adicionar livro</h2>
 
         <label for="add_nome_livro">Título do livro:</label>
-        <input type="text" name="add_nome_livro" id="add_nome_livro" placeholder="Título do livro" required>
+        <input type="text" name="titulo" id="add_nome_livro" placeholder="Título do livro" required>
 
         <label for="genero_livro">Gênero do livro:</label>
-        <input type="text" name="genero_livro" id="genero_livro" placeholder="Gênero do livro" required>
+        <input type="text" name="genero" id="genero_livro" placeholder="Gênero do livro" required>
 
         <input type="submit" value="adicionar">
     </form>

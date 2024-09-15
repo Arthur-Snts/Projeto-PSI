@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS romerito_database;
-USE romerito_database;
+CREATE DATABASE IF NOT EXISTS biblioteca;
+USE biblioteca;
 
 CREATE TABLE IF NOT EXISTS tb_usuarios (
     usu_id INT(11) AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS tb_usuarios (
 
 CREATE TABLE IF NOT EXISTS tb_contatos (
     con_id INT(11) AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    con_nome VARCHAR(200) NOT NULL,
     con_email VARCHAR(200) NOT NULL,
     con_usuarios_id INT(11) NOT NULL,
     FOREIGN KEY (con_usuarios_id) REFERENCES tb_usuarios(usu_id)

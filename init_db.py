@@ -2,10 +2,10 @@
 import mysql.connector
 
 db_config = {
-    'user': 'Romer_ito',
+    'user': 'root',
     'password': '',
     'host': 'localhost',
-    'database': 'romerito_database'
+    'database': 'biblioteca'
 }
 
 conn = None
@@ -27,7 +27,7 @@ if conn is not None:
     cursor = conn.cursor()
 
     # Localização do SQL
-    SCHEMA = "Projeto-PSI\database\database.sql"
+    SCHEMA = "database/database.sql"
 
     # Declara o SQL para o banco
     with open(SCHEMA, 'r') as f:
