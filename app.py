@@ -3,9 +3,8 @@ from flask import Flask, render_template, url_for, redirect, request
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from models import User
 from werkzeug.security import generate_password_hash, check_password_hash
-#from smtplib import SMTP, SMTP_SSL
-#from ssl import create_default_context
-#from email.message import EmailMessage
+import smtplib
+import email.message
 
 
 login_manager = LoginManager()
@@ -46,6 +45,19 @@ def cadastro():
         User.insert_data_user(nome, email, hash)
         user = User.select_data_user_email(email)
         login_user(user)
+
+        corpo = f"""
+        <p style= 'color: #007bff'>Olá!{current_user.nome} Parabéns pelo Cadastro feito em nossa Biblioteca Virtual, espero que goste!</p>
+
+        """
+        assunto = "Cadastro Bem Sucedido!"
+        destinatario = current_user.email
+
+
+        User.enviar_email(corpo, assunto, destinatario)
+
+
+
         return redirect(url_for("inicial"))
     return render_template('cadastro.html')
 
@@ -74,8 +86,21 @@ def livros():
         id = current_user.id
         User.insert_data_livro(titulo, genero, id)
 
+        corpo = f"""
+        <p style= 'color: #007bff'>Olá!{current_user.nome}</p>
+        <p>Livro adicionado! Segue-o:</p>
+        <p>{titulo} - {genero}</p>
+
+        """
+        assunto = f"Novo livro na biblioteca do genero {genero}"
+        destinatario = current_user.email
+
+
+        User.enviar_email(corpo, assunto, destinatario)
+
     id = current_user.id
     livros = User.select_data_livros(id)
+
     return render_template("livros.html", livros = livros)
 
 @app.route('/<int:id>/remove_livro', methods=['POST'])
@@ -88,59 +113,37 @@ def remove_livro(id):
 
 
 
-@app.route("/contatos", methods = ["POST", "GET"])
+
+
+
+
+@app.route("/comentarios", methods = ["POST", "GET"])
 @login_required
-def contatos():
+def comentarios():
     if request.method == "POST":
-        nome = request.form["nome"]
-        email = request.form["email"]
+        livro = request.form["livro"]
+        conteudo = request.form["conteudo"]
         id = current_user.id
-        User.insert_data_contato(nome, email, id)
-    
-    id = current_user.id
-    contatos = User.select_data_contatos(id)
-    return render_template("contatos.html", contatos = contatos)
 
-@app.route('/<int:id>/remove_contato', methods=['POST'])
-@login_required
-def remove_contato(id):
-    User.delete_data_contato(id)
-    return redirect(url_for("contatos"))
+        User.insert_data_comentario(conteudo, id, livro)
 
+        corpo = f"""
+        <p style= 'color: #007bff'>Olá!{current_user.nome}</p>
+        <p>Comentário adicionado! Segue-o:</p>
+        <p>{conteudo}</p>
 
+        """
+        assunto = f"Comentário sobre o livro {livro}"
+        destinatario = current_user.email
 
 
-
-@app.route("/correios", methods = ["POST", "GET"])
-@login_required
-def correios():
-    if request.method == "POST":
-        #contato = request.form["contato"]
-        #conteudo = request.form["conteudo"]
-        #assunto = request.form['assunto']
-        #email = current_user.email
-        #senha = request.form["senha"]
-
-        #msg = EmailMessage()
-        #msg.set_content(conteudo)
-        #msg['Subject'] = assunto
-        #msg['From'] = f"Python SMTP <{email}>"
-        #msg['To'] = contato
-
-    
-        #server = SMTP_SSL('smtp.gmail.com', 465, context=create_default_context())
-
-        #server.login(email, senha)
-        #server.send_message(msg=msg)
-        #server.quit()
-        pass
+        User.enviar_email(corpo, assunto, destinatario)
 
 
-    id = current_user.id
-    contatos = User.select_data_contatos(id)
-    livros = User.select_data_livros(id)
 
-    return render_template("correios.html", contatos = contatos, livros = livros)
+
+    return render_template("comentarios.html")
+   
 
 
 

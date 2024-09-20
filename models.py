@@ -1,5 +1,7 @@
 from flask_login import UserMixin
 import mysql.connector as sql
+import smtplib
+import email.message
 
 def obter_conexao():
     db_config = {
@@ -78,19 +80,6 @@ class User(UserMixin):
 
             return user
         
-    # SELECIONAR CONVERSAS  
-    @classmethod
-    def select_data_conversas(cls, id):
-        conexao = obter_conexao()
-        cursor = conexao.cursor(dictionary=True)
-        SELECT = 'SELECT * FROM tb_usuarios WHERE msg_usuario_to=%s OR msg_usuario_from=%s ORDER BY msg_data_envio DESC'
-        cursor.execute(SELECT, (id,id))
-        dados = cursor.fetchall()
-
-        cursor.close()
-        conexao.close()
-
-        return dados
 
 # SELECIONAR LIVRO  
     @classmethod
@@ -121,144 +110,20 @@ class User(UserMixin):
         
 
         return dados
-    
-# SELECIONAR CONTATOS       
-    @classmethod
-    def select_data_contatos(cls, id):
-        conexao = obter_conexao()
-        cursor = conexao.cursor(dictionary=True)
-        SELECT = 'SELECT * FROM tb_contatos WHERE con_usuarios_id=%s'
-        cursor.execute(SELECT, (id,))
-        dados = cursor.fetchall()
-        
 
-        return dados
-    
-    # SELECIONAR CONTATO 
-    @classmethod
-    def select_data_contato(cls, id):
-        conexao = obter_conexao()
-        cursor = conexao.cursor(dictionary=True)
-        SELECT = 'SELECT * FROM tb_contatos WHERE con_usuario_id=%s'
-        cursor.execute(SELECT, (id,))
-        dados = cursor.fetchone()
-        if dados:
-            user = User(dados['con_nome'], dados['con_email'])
-            user.id = dados["con_id"]
-
-            cursor.close()
-            conexao.close()
-
-            return user
-        
-    # SELECIONAR CONTATO POR EMAIL   
-    @classmethod
-    def select_data_contato_email(cls, email):
-        conexao = obter_conexao()
-        cursor = conexao.cursor(buffered=True)
-        SELECT = 'SELECT * FROM tb_usuarios WHERE usu_email=%s'
-        cursor.execute(SELECT, (email,))
-        dados = cursor.fetchone()
-        if dados:
-            user = User(dados[1], dados[2], dados[3])
-            user.id = dados[0]
-
-            conexao.commit()
-            cursor.close()
-
-            return user
-
-# ATUALIZAR SENHA (n faz sentido att e-mail)  
-    @classmethod
-    def update_data_user(cls,email, senha):
-        conexao = obter_conexao()
-        try:
-            cursor = conexao.cursor(dictionary=True)
-            UPDATE = 'UPDATE tb_usuarios SET usu_senha=%s WHERE usu_email=%s'
-            cursor.execute(UPDATE, (senha, email,))
-
-            conexao.commit()
-        except sql.connector.Error as e:
-            print(f"Erro ao atualizar dados: {e}")
-
-        finally:
-            cursor.close()
-            conexao.close()
-
-# ATUALIZAR TITULO E GÊNERO 
-    @classmethod
-    def update_data_livro(cls,id, titulo, genero):
-        conexao = obter_conexao()
-        try:
-            cursor = conexao.cursor(dictionary=True)
-            UPDATE = 'UPDATE tb_livros SET liv_titulo=%s, liv_genero=%s WHERE liv_id=%s'
-            cursor.execute(UPDATE, (titulo,genero,id,))
-
-            conexao.commit()
-        except sql.connector.Error as e:
-            print(f"Erro ao atualizar dados: {e}")
-
-        finally:
-            cursor.close()
-            conexao.close()
-
-# DELETAR USUÁRIO   
-    @classmethod
-    def delete_data_user(cls, email):
-        conexao = obter_conexao()
-        try:
-            cursor = conexao.cursor()
-            DELETE = 'DELETE FROM tb_usuarios WHERE usu_email=%s'
-            cursor.execute(DELETE, (email,))
-            conexao.commit()
-
-        except sql.connector.Error as e:
-            print(f"Erro ao deletar dados: {e}")
-
-        finally:
-            cursor.close()
-            conexao.close()
-
-# DELETAR LIVRO
-    @classmethod
-    def delete_data_livro(cls, id):
-        conexao = obter_conexao()
-        cursor = conexao.cursor()
-        DELETE = 'DELETE FROM tb_livros WHERE liv_id=%s'
-        cursor.execute(DELETE, (id,))
-        conexao.commit()
-
-        cursor.close()
-        conexao.close()
-
-# DELETAR CONTATO
-    @classmethod
-    def delete_data_contato(cls, id):
-        conexao = obter_conexao()
-        cursor = conexao.cursor()
-        DELETE = 'DELETE FROM tb_contatos WHERE con_id=%s'
-        cursor.execute(DELETE, (id,))
-        conexao.commit()
-
-        cursor.close()
-        conexao.close()
 
 # INSERIR USER
     @classmethod
     def insert_data_user(cls, nome, email, senha):
         conexao = obter_conexao()
-        try:
-            cursor = conexao.cursor()
-            INSERT = 'INSERT INTO tb_usuarios (usu_nome, usu_email, usu_senha) VALUES (%s, %s, %s)'
-            cursor.execute(INSERT, (nome, email, senha,))
-            conexao.commit()
 
-        except sql.connector.Error as e:
-            print(f"Erro ao inserir dados: {e}")
+        cursor = conexao.cursor()
+        INSERT = 'INSERT INTO tb_usuarios (usu_nome, usu_email, usu_senha) VALUES (%s, %s, %s)'
+        cursor.execute(INSERT, (nome, email, senha,))
+        conexao.commit()
 
-        finally:
-            cursor.close()
-            conexao.close()
+        cursor.close()
+        conexao.close()
 
 # INSERIR LIVRO
     @classmethod
@@ -285,4 +150,39 @@ class User(UserMixin):
 
         cursor.close()
         conexao.close()
+# INSERIR COMENTARIO
+    @classmethod
+    def insert_data_comentario(cls, conteudo, usuario, livro):
+        conexao = obter_conexao()
+    
+        cursor = conexao.cursor()
+        INSERT = 'INSERT INTO tb_comentarios (com_conteudo, com_usu_id, com_livro_id) VALUES (%s, %s, %s)'
+        cursor.execute(INSERT, (conteudo, usuario, livro))
+        conexao.commit()
+        cursor.close()
+        conexao.close()
+
+
+
+#ENVIAR EMAIL
+
+    @classmethod
+    def enviar_email(cls, corpo, assunto, destinatario):
+        
+        corpo_email = corpo
+
+        msg = email.message.Message()
+        msg["Subject"] = assunto
+        msg["From"] = "bibliotecavirtual432@gmail.com"
+        msg["To"] = destinatario
+        password = "mjdiinyyrzelbicy"
+        msg.add_header("Content-Type", "text/html")
+        msg.set_payload(corpo_email)
+
+        s = smtplib.SMTP("smtp.gmail.com: 587")
+        s.starttls()
+        s.login(msg["From"], password)
+        s.sendmail(msg["From"], [msg["To"]], msg.as_string().encode("utf-8"))
+
+
 

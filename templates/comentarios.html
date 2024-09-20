@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    Correios
+    Comentarios
 {% endblock %}
 
 {% block conteudo %}
@@ -10,22 +10,15 @@
 
 
 <form action="{{url_for('correios')}}" method="POST">
-    <h2>Mandar Email</h2>
+    <h2>Anotar Comentário sobre livro</h2>
 
-    <label for="add_nome_livro">Contato:</label>
-    <select name="contato" id="">
-        {% for contato in contatos %}
-            <option value="{{contato['con_email']}}">{{contato['con_nome']}}</option>
-        {% endfor %}
-    </select>
-    <select name="assunto" id="">
+    <select name="livro" id="">
         {% for livro in livros %}
             <option value="{{livro['liv_titulo']}}">{{livro['liv_titulo']}}</option>
         {% endfor %}
     </select>
     <label for="">Mensagem:</label>
     <input type="text" placeholder="Insira a mensagem" name = "conteudo">
-    <input type="password" placeholder="Insira sua senha" name = "senha">
     <input type="submit" value="Enviar">
 </form>
 {% endblock %}
