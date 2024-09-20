@@ -3,9 +3,9 @@ from flask import Flask, render_template, url_for, redirect, request
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from models import User
 from werkzeug.security import generate_password_hash, check_password_hash
-from smtplib import SMTP, SMTP_SSL
-from ssl import create_default_context
-from email.message import EmailMessage
+#from smtplib import SMTP, SMTP_SSL
+#from ssl import create_default_context
+#from email.message import EmailMessage
 
 
 login_manager = LoginManager()
@@ -78,7 +78,7 @@ def livros():
     livros = User.select_data_livros(id)
     return render_template("livros.html", livros = livros)
 
-@app.route('/<int:id>/remove_peca', methods=['POST'])
+@app.route('/<int:id>/remove_livro', methods=['POST'])
 @login_required
 def remove_livro(id):
     User.delete_data_livro(id)
