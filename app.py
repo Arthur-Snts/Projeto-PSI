@@ -140,9 +140,9 @@ def comentarios():
         User.enviar_email(corpo, assunto, destinatario)
 
 
+    livros = User.select_data_livros(current_user.id)
 
-
-    return render_template("comentarios.html")
+    return render_template("comentarios.html", livros = livros)
    
 
 
