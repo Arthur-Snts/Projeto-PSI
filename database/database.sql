@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS tb_livros (
     liv_id INT(11) AUTO_INCREMENT PRIMARY KEY NOT NULL,
     liv_titulo VARCHAR(200) NOT NULL,
     liv_genero VARCHAR(200) NOT NULL,
+    liv_autor VARCHAR(200) NOT NULL,
     liv_usuarios_id INT(11) NOT NULL
 );
 

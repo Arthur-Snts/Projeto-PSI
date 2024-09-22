@@ -110,7 +110,15 @@ class User(UserMixin):
         
 
         return dados
-
+    
+    
+    @classmethod
+    def delete_data_livro(cls, id):
+        conexao = obter_conexao()
+        cursor = conexao.cursor()
+        DELETE = 'DELETE FROM tb_livros WHERE liv_id=%s'
+        cursor.execute(DELETE, (id,))
+        conexao.commit()
 
 # INSERIR USER
     @classmethod
@@ -127,12 +135,12 @@ class User(UserMixin):
 
 # INSERIR LIVRO
     @classmethod
-    def insert_data_livro(cls, titulo, genero, id):
+    def insert_data_livro(cls, titulo, genero, autor, id):
         conexao = obter_conexao()
     
         cursor = conexao.cursor()
-        INSERT = 'INSERT INTO tb_livros (liv_titulo, liv_genero, liv_usuarios_id) VALUES (%s, %s, %s)'
-        cursor.execute(INSERT, (titulo, genero, id))
+        INSERT = 'INSERT INTO tb_livros (liv_titulo, liv_genero, liv_autor, liv_usuarios_id) VALUES (%s, %s, %s, %s)'
+        cursor.execute(INSERT, (titulo, genero, autor, id))
         conexao.commit()
 
         cursor.close()
